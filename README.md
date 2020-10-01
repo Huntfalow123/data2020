@@ -4,24 +4,24 @@ Group members:
 - Brandon Zeng
 - Benjamin Smith
 
-## Workshop Representative (need 1 per team)
+## Schedule (For workshop, 1 rep per team needed)
 ### Saturday
-| Time           | Activity                 |
-|----------------|--------------------------|
-| 10:00-11:00 am | Data Preparation         |
-| 2:00-3:00 pm   | Mentoring 1              |
-| 3:00-4:00      | Open Consultation        |
-| 4:00-5:00      | Mentoring 2              |
+| Time           | Activity                 | Member          |
+|----------------|--------------------------|-----------------|
+| 10:00-11:00 am | Data Preparation         | (/)
+| 2:00-3:00 pm   | Mentoring 1              | -
+| 3:00-4:00      | Open Consultation        | -
+| 4:00-5:00      | Mentoring 2              | -
 
 ### Sunday
-| Time           | Activity                 |
-|----------------|--------------------------|
-| 10:00          | Code due                 |
-| 10:00-11:00 am | Storytelling Workshop    |
-| 1:00 pm        | Slide decks due          |
-| 1:00-2:00      | Heats Preso              |
-| 3:00           | Announcement             |
-| 4:00-5:00      | Finals Preso             |
+| Time           | Activity                 | Member          |
+|----------------|--------------------------|-----------------|
+| 10:00          | Code due                 | -
+| 10:00-11:00 am | Storytelling Workshop    | (/)
+| 1:00 pm        | Slide decks due          | -
+| 1:00-2:00      | Heats Preso              | -
+| 3:00           | Announcement             | -
+| 4:00-5:00      | Finals Preso             | -
 
 ## Suggested Strategy
 1. Attend the data prep session for data munging tips. Allocate an hour to get familiar with the data sources, explore the data, decide on
