@@ -1,4 +1,4 @@
-# data2020
+# Datathon 2020
 Group members:
 - Kirsten Tai
 - Brandon Zeng
