@@ -8,20 +8,20 @@ Group members:
 ### Saturday
 | Time           | Activity                 | Member          |
 |----------------|--------------------------|-----------------|
-| 10:00-11:00 am | Data Preparation         | (/)
-| 2:00-3:00 pm   | Mentoring 1              | -
-| 3:00-4:00      | Open Consultation        | -
-| 4:00-5:00      | Mentoring 2              | -
+| 10:00-11:00 am | Data Preparation         | (1)
+| 2:00-3:00 pm   | Mentoring 1              | X
+| 3:00-4:00      | Open Consultation        | X
+| 4:00-5:00      | Mentoring 2              | X
 
 ### Sunday
 | Time           | Activity                 | Member          |
 |----------------|--------------------------|-----------------|
-| 10:00          | Code due                 | -
-| 10:00-11:00 am | Storytelling Workshop    | (/)
-| 1:00 pm        | Slide decks due          | -
-| 1:00-2:00      | Heats Preso              | -
-| 3:00           | Announcement             | -
-| 4:00-5:00      | Finals Preso             | -
+| 10:00          | Code due                 | X
+| 10:00-11:00 am | Storytelling Workshop    | (1)
+| 1:00 pm        | Slide decks due          | X
+| 1:00-2:00      | Heats Preso              | X
+| 3:00           | Announcement             | X
+| 4:00-5:00      | Finals Preso             | X
 
 ## Suggested Strategy
 1. Attend the data prep session for data munging tips. Allocate an hour to get familiar with the data sources, explore the data, decide on
