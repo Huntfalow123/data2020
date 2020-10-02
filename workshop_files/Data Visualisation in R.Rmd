@@ -1,0 +1,484 @@
+---
+title: "Data Visualisation with R"
+author: "Datasoc - Daniel"
+date: "September 2020"
+output: 
+  ioslides_presentation:
+    widescreen: true
+    smaller: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+knitr::knit_hooks$set(output = function(x, options){
+  if(!is.null(options$max_height)){
+    paste('<pre style = "max-height:', options$max_height, '; float: left; width: 910px; overflow-y: auto;">', x, "</pre>", sep = "")
+  }else{
+    x
+  }
+  
+})
+```
+
+## Data Visualisation
+Data visualisation is imperative to data analysis. Representing data through a visual medium is an effective means of communicating key insights of the analysis. 
+
+In R, we primarily use <span style="color:blue">**ggplot2**</span>, one of the most versatile and effective packages for data visualisation. To install and load this package, we can use the following code:
+
+```{r, eval=FALSE}
+# Installing Tidyverse (contains ggplot2)
+
+install.packages("tidyverse")
+library(tidyverse)
+
+# Alternatively
+
+install.packages("ggplot2")
+library(ggplot2)
+```
+
+
+```{r, echo=FALSE, eval=TRUE, warning=FALSE, message=FALSE}
+# Background -- Loading packages
+library(ggplot2)
+library(dplyr)
+```
+
+* *Reminders*:
+  + Only need to install a package once, but necessary to reload every session. 
+  + If required, we can explicitly call a specific function (from a package): `ggplot2::ggplot()` will call the `ggplot()` function from **ggplot2** package 
+  
+## Preliminary Steps
+
+Think about what *visual medium* is ideal for communicating your data.
+
+Is your data <span style="color:lightblue">Quantitative</span> or <span style="color:violet">Qualitative</span>?
+
+If it's <span style="color:lightblue">quantitative</span>, is it:
+
+  + Continuous or Discrete?
+
+If it's <span style="color:violet">qualitative</span>, is it:
+
+  + Binomial, Nominal or Ordinal?
+
+Classifying data is important as it enables you to choose the *best visual medium* to represent your data. 
+
+<br>
+
+Don't know what to choose? 
+
+* Check out:
+https://www.visual-literacy.org/periodic_table/periodic_table.html# 
+
+## The Dataset - Top Spotify Songs from 2010-2019 
+
+* Most popular songs in the world <span style="color:green">by year</span>
+* <span style="color:red">13 variables</span> to be explored
+  + <span style="color:lightblue">Artist, Genre, Year, BPM, Energy, Danceability, dB, Liveness, Valence, Duration, Acousticness, Speechiness, Popularity</span>
+
+<br> 
+Download the `.csv` file <span style="color:blue">top10s.csv</span> and import it into R.
+
+<br>
+Recall:
+
+```{r, echo=TRUE, eval=TRUE}
+# Set Working Directory
+setwd("C:/Users/Daniel/Desktop")
+
+# Import dataset
+top10s <- read.csv("top10s.csv")
+
+```
+
+## ggplot2 - Geom Functions
+
+In this workshop, we'll cover how to implement the <span style="color:green">most common and important visualisation methods</span> that you may already be familiar with. These can be implemented by calling the function tied to the method; usually in the format of `geom_function` in <span style="color:blue">**ggplot2**</span>.
+
+* Bar Graphs
+* Histograms
+* Scatter Plots
+* Boxplots
+* Pie Graphs
+* Line Graphs
+* Time Series
+* Heatmaps
+
+There are *many* other visualisation methods not included here, so if you're interested, you could check out a more extensive list:
+http://r-statistics.co/Top50-Ggplot2-Visualizations-MasterList-R-Code.html
+
+## ggplot2 - Creating a ggplot (Basics)
+
+With ggplot2, you always begin plotting by <span style="color:violet">creating a blank, coordinate system</span> that you can then add layers to. We specify the dataset to be used for the graph, using the first argument of ggplot.
+
+```{r, echo=TRUE, eval=TRUE, fig.height=4, fig.width=6}
+ggplot(data = top10s)
+```
+
+## ggplot2 - Mapping aesthetics in geom functions (Basics)
+
+We complete the graph by adding <span style="color:green">*layers*</span> to `ggplot()`. This involves specifying a <span style="color:violet">geom function</span>, and mapping the variables in the dataset to visual properties. 
+
+The mapping argument (of any geom function) is always paired with `aes()`, and the `x` and `y` arguments of `aes()` specify the variables that are mapped to the x and y axes. 
+
+Generally, we have the following template: 
+
+```{r, echo=TRUE, eval=FALSE}
+ggplot(data = top10s) +
+  <GEOM_FUNCTION>(mapping = aes(<MAPPINGS>)) 
+```
+
+*Note that we will replace* **GEOM_FUNCTION** *with a particular function, and* **MAPPINGS** *with the desired mappings.*
+
+Also note that the **+** operator is contained within the packages, and is specific to `ggplot` objects; used to add layers to plots.
+
+## ggplot2 - Bar Graph: General
+
+A simple chart which diagrammatically compares the **frequency distribution** of <span style="color:violet">**discrete**</span> categorical variables.
+
+<hr/>
+
+In our dataset <span style="color:blue">**top10s**</span>, we examine the distribution of <span style="color:red">**Genres**</span> given by the `top.genre` variable, by using the function <span style="color:purple">**geom_bar**</span>.
+
+```{r, echo=TRUE, eval=TRUE, fig.height=3.3, fig.width=6, fig.align='center'}
+ggplot(data = top10s) +
+  geom_bar(mapping = aes(x = top.genre)) 
+```
+
+## ggplot2 - Bar Graph: Changing the aesthetics
+
+```{r, echo=TRUE, eval=TRUE, fig.height=3.7, fig.width=6, fig.align='center'}
+ggplot(data = top10s) +
+  geom_bar(mapping = aes(x = top.genre, fill = top.genre)) + # Colour - inside aes()
+  labs(title = "Distribution of Top Genres") + # Add title
+  xlab("Genre") + # x-axis label
+  ylab("Frequency") + # y-axis label
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5, size = 6), 
+        legend.position = "none") # Labels and Adjustments
+```
+
+## ggplot2 - Histograms: General
+
+Similar to bar graphs, but diagrammatically compares the **frequency distribution** of <span style="color:violet">**continuous**</span> variables. Histograms plot continuous data by grouping the ranges of the data into bins/intervals. 
+
+<hr/>
+
+In our dataset <span style="color:blue">**top10s**</span>, we examine the distribution of <span style="color:red">**BPM**</span> given by the `bpm` variable, by using the function <span style="color:purple">**geom_histogram**</span>.
+
+```{r, echo=TRUE, eval=TRUE, fig.height=3, fig.width=6, fig.align='center', message = FALSE}
+ggplot(data = top10s) +
+  geom_histogram(mapping = aes(x = bpm), binwidth = 10) # Bins of width 10
+```
+
+## ggplot2 - Histograms: Changing the Aesthetics
+```{r, echo=TRUE, eval=TRUE, fig.height=3.7, fig.width=6, fig.align='center'}
+ggplot(data = top10s) +
+  geom_histogram(mapping = aes(x = bpm), binwidth = 10, fill = "lightblue", 
+                 colour = "coral") + # Coral linetype and Lightblue fill (outside aes())
+  labs(title = "Distribution of BPM") + # Add title
+  xlab("BPM") + # x-axis label
+  ylab("Frequency") # y-axis label
+```
+
+## ggplot2 - Scatterplots: General
+Used to visualise the **relationship** <span style="color:violet">**two continuous**</span> variables. <span style="color:green">Each data point is plotted</span> with x and y coordinates corresponding to the numerical value of the two variables. 
+
+<hr/>
+
+In our dataset <span style="color:blue">**top10s**</span>, we examine the relationship between <span style="color:red">**Speechiness**</span> and <span style="color:red">**Popularity**</span> given by `spch` and `pop` variables, by using the function <span style="color:purple">**geom_point**</span>.
+
+```{r, echo=TRUE, eval=TRUE, fig.height=3, fig.width=6, fig.align='center', message = FALSE}
+ggplot(data = top10s) +
+  geom_point(mapping = aes(x = spch, y = pop)) # x - Speechiness, y - Popularity
+```
+
+## ggplot2 - Scatterplots: Changing the Aesthetics
+
+```{r, echo=TRUE, eval=TRUE, fig.height=3.5, fig.width=6, fig.align='center', message = FALSE}
+ggplot(data = top10s) +
+  geom_point(mapping = aes(x = spch, y = pop, colour = top.genre)) + # Colours based on genre
+  labs(title = "Speechiness vs Popularity") + # Add title
+  xlab("Speechiness") + # x-axis label
+  ylab("Popularity") + # y-axis label
+  theme(legend.position = "none") # Remove legend
+```
+
+## ggplot2 - Boxplots: General
+
+Representing <span style="color:violet">**groups of numerical data**</span> through quartiles. Lower and upper quartiles shown as <span style="color:green">lines extending from a rectangle</span> with most of the distribution (and the median) <span style="color:green">within the rectangle</span>.
+
+<hr/>
+
+In our dataset <span style="color:blue">**top10s**</span>, we compare <span style="color:red">**Popularity**</span> for **each** <span style="color:red">**Genre**</span>. Provided by the `top.genre` and `pop` variables and using the function <span style="color:purple">**geom_boxplot**</span>.
+
+```{r, echo=TRUE, eval=TRUE, fig.height=3, fig.width=6, fig.align='center'}
+ggplot(data = top10s) +
+  geom_boxplot(mapping = aes(x = top.genre, y = pop)) 
+```
+
+## ggplot2 - Boxplots: Changing the Aesthetics
+
+```{r, echo=TRUE, eval=TRUE, fig.height=3.5, fig.width=6, fig.align='center', message = FALSE}
+ggplot(data = top10s) +
+  geom_boxplot(mapping = aes(x = top.genre, y = pop, 
+                             fill = top.genre, alpha = 0.5)) + # Colour and transparency
+  labs(title = "Distribution of Popularity for each Genre") + # Add title
+  xlab("Genre") + # x-axis label
+  ylab("Popularity") + # y-axis label
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5, size = 3), 
+        legend.position = "none") # Labels and Adjustments
+```
+
+## ggplot2 - Pie Chart: General
+Circle which is <span style="color:green">divided into sectors</span> that each represent a <span style="color:violet">**proportion**</span> of the whole. 
+
+<hr/>
+
+In our dataset <span style="color:blue">**top10s**</span>, we examine the distribution of <span style="color:red">**Year**</span> for the **most popular Spotify songs**, provided by the `year` variable. A combination of the functions <span style="color:purple">**geom_bar**</span> and <span style="color:purple">**coord_polar**</span> is used.
+
+```{r, echo=TRUE, eval=TRUE, fig.height=1.5, fig.width=1.5, fig.align='center'}
+# Get proportions using dplyr package and create new dataframe
+pie.df <- top10s %>%
+  group_by(year) %>%
+  summarise(n=n()) %>%
+  mutate(n/sum(n)*100.0) %>%
+  arrange(desc(n))
+
+# Plot pie chart using new data frame using height of bars to represent values
+ggplot(data = pie.df) + 
+  geom_bar(mapping = aes(x = "", y = as.factor(year)), stat = "identity", width = 1) +
+  coord_polar("y", start = 0) # Making it circular
+```
+
+## ggplot2 - Pie Chart: Changing the Aesthetics
+
+```{r, echo=TRUE, eval=TRUE, fig.height=4, fig.width=5, fig.align='center', warning = FALSE}
+ggplot(data = pie.df) + 
+  geom_bar(mapping = aes(x = "", y = as.factor(year), fill = as.factor(year)), # Colour
+           stat = "identity", width = 1) + 
+  coord_polar("y", start = 0) +
+  theme_void() + # Remove background, grid and numeric labels
+  scale_fill_discrete(name = "Year") # Change legend title
+```
+
+## ggplot2 - Line Graphs (Time Series): General
+Line graphs depict the <span style="color:green">relationship between two variables</span>, connecting individual data points that display <span style="color:violet">**quantitative**</span> y-values over another quantitative or qualitative x-value (usually time). **Time Series** graphs are essentially line charts, except that the horizontal axis is exclusively <span style="color:green">time-based</span>. 
+
+<hr/>
+
+In our dataset <span style="color:blue">**top10s**</span>, we examine how **average** <span style="color:red">**BPM**</span> changes over time (in <span style="color:red">**Years**</span>) given by `bpm` and `year` variables, by using the function <span style="color:purple">**geom_line**</span>.
+
+*First, we'll need to average the BPMs for each Year (2010-2019) before plotting.*
+
+```{r, echo=TRUE, eval=TRUE, max_height="100px"}
+# Creating new dataframe
+line.df <- top10s %>%
+  group_by(year) %>% # Group by Year
+  summarise(avg_bpm = mean(bpm)) # Average BPM for each Year
+
+line.df
+```
+
+## ggplot2 - Line Graphs (Time Series): Plotting
+
+```{r, echo=TRUE, eval=TRUE, fig.height=4.5, fig.width=6, fig.align='center'}
+ggplot(data = line.df) +
+  geom_line(mapping = aes(x = year, y = avg_bpm)) 
+```
+
+## ggplot2 - Line Graphs (Time Series): Aesthetics
+
+```{r, echo=TRUE, eval=TRUE, fig.height=3.5, fig.width=6, fig.align='center'}
+ggplot(data = line.df) +
+  geom_line(mapping = aes(x = year, y = avg_bpm), colour = "lightblue", lwd = 1.5) +
+  geom_point(aes(x = year, y = avg_bpm), colour = "coral", size = 3) +  # Overlay geom_point
+  scale_x_continuous(breaks = 2010:2019) + # Changing ticks
+  labs(title = "Average BPM from 2010-2019") + # Add title
+  xlab("Year") + # x-axis label
+  ylab("Average BPM") # y-axis label
+```
+
+## Base R - Heatmaps: General
+
+Heatmaps represent the <span style="color:green">magnitude</span> of <span style="color:violet">**numerical**</span> values by **colours**, providing an immediate visual summary of the data. Heatmaps are versatile; able to adapt to various forms of analytics. 
+
+<hr/>
+
+In our dataset <span style="color:blue">**top10s**</span>, we will construct a **correlation** heatmap between <span style="color:red">**all 10 numeric variables**</span> (excluding Year), by using the <span style="color:purple">**heatmap()**</span> function in <span style="color:blue">**Base R**</span>.
+
+*First, we need to output a correlation matrix for our 10 variables.*
+
+```{r, echo=TRUE, eval=TRUE, max_height="130px"}
+corrmat <- round(cor(top10s[,6:15]), 2) # Correlation Matrix of last 10 Variables, rounded
+
+corrmat # Display Correlation Matrix
+```
+
+## Base R - Heatmaps: Plotting
+
+```{r, echo=TRUE, eval=TRUE, fig.align='center', fig.height = 5}
+heatmap(corrmat)
+```
+
+## Base R - Heatmaps: Aesthetics
+
+```{r, echo=TRUE, eval=TRUE, fig.align='center', fig.height = 5}
+# Base R's colour palettes: terrain.color(), rainbow(), heat.colors(), topo.colors()
+heatmap(corrmat, Colv = NA, Rowv = NA, col = cm.colors(256), main = "Correlation Heatmap")
+```
+
+## ggplot2 - Bonus: Overlaying Graphs 1
+
+* Overlaying a <span style="color:purple">**Scatter Plot**</span> and a <span style="color:purple">**Smooth Curve OBF**</span>. 
+```{r, echo=TRUE, eval=TRUE, fig.align='center', fig.height = 4, message = FALSE}
+ggplot(top10s, aes(x = spch, y = pop, colour = bpm, alpha = 0.7)) +
+  geom_point() +
+  geom_smooth()
+```
+
+## ggplot2 - Bonus: Overlaying Graphs 2
+* Overlaying <span style="color:purple">**two Histograms**</span>.
+
+```{r, echo=TRUE, eval=TRUE, fig.height=4, fig.align='center'}
+ggplot(top10s) + 
+  geom_histogram(aes(x = nrgy), binwidth = 10, fill = "lightblue", alpha = 0.3) +
+  geom_histogram(aes(x = dnce), binwidth = 10, fill = "lightpink", alpha = 0.3)
+```
+
+## ggplot2 - Bonus: Allocating sizes
+
+* Sizes of circles in  <span style="color:purple">**Scatterplot**</span> are indicative of the **magnitude** of another variable. 
+```{r, echo=TRUE, eval=TRUE, fig.align='center', fig.height = 4}
+ggplot(top10s) +
+  geom_point(aes(x = spch, y = pop, colour = top.genre, size = bpm), alpha = 0.3) + # Scale circle size depending on BPM
+    theme(legend.position = "none") # Remove legend
+```
+
+## ggplot2 - Bonus: Stacked bar graphs
+
+* Mapping the <span style="color:coral">**fill**</span> aesthetic to another variable `artist`: Bars become stacked and each rectangle (representing a certain `genre`) comprises of the `artists` that make up the `genre`. 
+```{r, echo=TRUE, eval=TRUE, fig.height=3.8, fig.align='center'}
+ggplot(data = top10s) +
+  geom_bar(mapping = aes(x = top.genre, fill = artist), alpha = 0.7) + # Fill according to artist
+  xlab("") + ylab("") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5, size = 6), legend.position = "none")
+```
+
+## Extension - Defining functions for efficiency
+
+Functions can be used to prevent repetition when setting the parameters, especially when multiple, similar plots are required.
+
+```{r, echo=TRUE, eval=TRUE}
+create_scatter <- function(df, xvar, yvar, xname, yname, title){
+  ggplot(df) +
+    geom_point(aes(x = {{xvar}}, y = {{yvar}}, colour = pop)) + # Colour based on Popularity
+    labs(title = title) + # Title
+    scale_x_discrete(name = xname) + # x-axis label
+    scale_y_continuous(name = yname) + # y-axis label
+    theme(legend.position = "none") # Remove legend
+}
+```
+
+<span style="color:red">**Example**</span>
+
+```{r, echo = TRUE, eval = FALSE}
+# Create a scatterplot (using user-defined function) of BPM and Liveliness
+create_scatter(top10s, bpm, live, "Beats Per Minute", "Liveliness", "BPM vs Liveliness")
+```
+
+Note: *Use `{{` and `}}` when defining which variable to call when creating your function, otherwise it will return* `object 'variable' not found`. 
+
+## Extension - Automating Plotting Process
+We can use <span style="color:orange">**loops**</span> function to create plots *quickly and easily*. First, we create an empty list:
+
+```{r, echo = TRUE, eval = FALSE}
+plot_list = list() # Empty list
+```
+
+Then, we create a <span style="color:orange">**for**</span> loop to store the *ith variable plot* (with `popularity` variable) in the list, iterated:
+```{r, echo = TRUE, eval = FALSE}
+for(i in 6:15){ 
+  plot <- ggplot(top10s) + # For each iteration, store the plot made with the ith variable and popularity
+    geom_point(aes(x = top10s[,i], y = pop, colour = top.genre)) + # Scatterplot
+    theme(legend.position = "none") + # Remove legend
+    xlab(colnames(top10s)[i]) + # x-axis label
+    ylab("Popularity") # y-axis label
+  plot_list[[i]] = plot # Add the ith plot to the plot_list
+} 
+```
+
+Finally, we <span style="color:orange">**export**</span> our graphs using R's native functions:
+```{r, echo = TRUE, eval = FALSE}
+pdf("myplots.pdf") # Create empty pdf file named "myplots"
+for(i in 6:15){ # Print each plot in plot_list variable (on separate page in pdf)
+  print(plot_list[[i]])
+} 
+dev.off() # Complete action and save PDF file
+```
+
+## ggplot2 - Exporting your graphs: `ggsave()`
+
+`ggsave()` is a convenient function in the <span style="color:blue">**ggplot2**</span> package which defaults to saving the <span style="color:orange">**last plot displayed**</span>.
+
+```{r, echo = TRUE, eval = FALSE}
+ggsave("myfilename.png", width = 28, height = 9, dpi = 300)
+# Specifying Name, Type, Width, Height and Resolution
+```
+
+* There are other arguments it can take as well:
+  + `plot`: Specify which plot (otherwise it will default to last plot)
+  + `device`: Device to use: e.g. "pdf", "jpeg", "png" etc. 
+  + `units`: ("in","cm" or "mm")
+  + `limitsize`: TRUE (default) will not save images larger than 50x50 inches
+
+<br/>
+<br/>
+<br/>
+
+See more: https://ggplot2.tidyverse.org/reference/ggsave.html 
+
+## R - Exporting your graphs using Base R
+
+1. After creating your graph, you can simply go to the <span style="color:violet">**Plots Panel -> Export -> Save as Image or Save as PDF**</span> and specify your dimensions and format.
+
+2. Using code:
+
+* First, specify the file format.
+* Enter your plotting commands (or call the saved plot)
+* Then use `dev.off()` command.
+
+```{r, eval = FALSE, echo = TRUE}
+jpeg("my_plot_name.jpg") # Specify format and name
+plot(x,y) OR myplot # Plot the graph or call the graph
+dev.off() # To complete process (important)
+```
+
+Common Formats:
+
+* `pdf("rplot.pdf")`: PDF file
+* `png("rplot.png")`: PNG file
+* `jpeg("rplot.jpg")`: JPEG file
+* `bmp("rplot.bmp")`: BMP file
+
+## Useful links for Data Visualisation in R
+
+* ggplot2 Cheatsheet
+  + https://rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf 
+
+<br/>
+
+* Base R - Data Visualisation Cheatsheet
+  + https://www.analyticsvidhya.com/wp-content/uploads/2015/08/Comprehensive-Guide-to-Data-Visualization-in-R-FINAL-1.jpg 
+
+<br/>
+
+* Periodic Table of Visualisation Methods
+  + https://www.visual-literacy.org/periodic_table/periodic_table.html# 
+
+<br/>
+
+* More Visualisation Methods in R
+  + http://r-statistics.co/Top50-Ggplot2-Visualizations-MasterList-R-Code.html 
+  
